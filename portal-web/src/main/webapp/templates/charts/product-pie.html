@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/lib/html5shiv.js"></script>
+<script type="text/javascript" src="/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/js/loading/load.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>折线图</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 统计管理 <span class="c-gray en">&gt;</span> 折线图 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="text-c">
+        选择日期范围：
+        <input id="start" placeholder="请输入日期" class="laydate-icon" onClick="laydate({elem:'#start',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        -
+        <input id="end" placeholder="请输入日期" class="laydate-icon" onClick="laydate({elem:'#end',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        <button name="" id="search-dataset" class="btn btn-success" type="submit" onclick="search_dataset()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </div>
+    <div id="container" style="min-width:700px;height:400px"></div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script src="/js/echarts.min.js"></script>
+<script type="text/javascript" src="/js/laydate.js"></script>
+<script src="/js/loading/load-min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    function search_dataset(){
+        //loading图标
+        $.mask_element('#container');
+
+        var startDate = $("#start").val();
+        var endDate = $("#end").val();
+
+        /*如果结束日期不填，默认到当前日期*/
+        if(endDate == "") {
+            endDate = new Date();
+
+            endDate = endDate.format('yyyy-MM-dd hh:mm:ss');
+        }
+        /*如果起始日期不填，默认搜索七天内的*/
+        if(startDate == "") {
+            //将endDate转换为时间戳
+            startDate = Date.parse(new Date(endDate));
+            //得到七天前的时间戳
+            startDate = startDate - 1000*60*60*24*7;
+            /*将时间戳按照格式转换*/
+            var time = new Date();
+            time.setTime(startDate);
+            startDate = time.format('yyyy-MM-dd hh:mm:ss');
+        }
+
+        if(startDate >= endDate) {
+            alert("请输入正确的日期区间！");
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: "/datamart/hdfs/getPie",
+            data: {
+                'startDate' : startDate,
+                'endDate' : endDate,
+            },
+            success: function (data) {
+                drawChart(data, startDate, endDate)
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    }
+
+    function drawChart(data, startDate, endDate) {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('container'));
+
+        var titleText = startDate + "至" + endDate + " 各产品线占比情况"
+
+        var productList = data.productList;
+
+        if(productList.length == 0) {
+            alert("请求的时间区间内没有数据");
+        }
+
+        var dataProduct = [];
+        for(var i=0; i<productList.length; i++) {
+            var product = productList[i];
+            dataProduct.push({
+                value: (data.mapProduct)[product],
+                name: productList[i]
+            });
+        }
+
+        option = {
+            title : {
+                text: titleText,
+                top: 20,
+                left: '15%'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{b} : {c}M ({d}%)"
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: '5%',
+                top: 50,
+                bottom: 20,
+                data: productList
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {
+                        show: true,
+                        type: ['pie', 'funnel']
+                    },
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            series : [
+                {
+                    type: 'pie',
+                    radius : '80%',
+                    center: ['40%', '58%'],
+                    data: dataProduct,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        //使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        //自适应大小
+        window.onresize = myChart.resize;
+
+        //关闭loading图标
+        $.mask_close('#container');
+    }
+
+    /*当页面加载时执行一次*/
+    $(document).ready(function(){
+        search_dataset();
+    });
+</script>
+</body>
+</html>

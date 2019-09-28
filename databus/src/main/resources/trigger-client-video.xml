@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:motan="http://api.weibo.com/schema/motan"
+       xmlns:trigger="http://api.weibo.com/schema/trigger"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://api.weibo.com/schema/motan http://api.weibo.com/schema/motan.xsd
+           http://api.weibo.com/schema/trigger http://api.weibo.com/schema/trigger.xsd">
+
+    <motan:registry id="vintage_normal" name="vintage_normal" regProtocol="trigger_vintage"
+                    address="config.api.weibo.com" port="80" excise="dynamic" registrySessionTimeout="10000" />
+
+    <trigger:tmc id="triggerVideoMc" registry="vintage_normal" group="video-core" maxSize="100" type="video_status"
+                 consumerGroupId="dip_databus_video" consumerId="dip_databus_video" socketTimeOut="5000">
+    </trigger:tmc>
+</beans>

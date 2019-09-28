@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+        <property>
+                <name>yarn.resourcemanager.connect.retry-interval.ms</name>
+                <value>2000</value>
+        </property>
+         <property>
+                <name>yarn.resourcemanager.ha.enabled</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.ha.automatic-failover.enabled</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.ha.rm-ids</name>
+                <value>rm1,rm2</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.ha.id</name>
+                <value>rm2</value>
+               <description>If we want to launch more than one RM in single node, we need this configuration</description>
+         </property>
+         <property>
+                <name>yarn.resourcemanager.recovery.enabled</name>
+                 <value>true</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.store.class</name>
+                <value>org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.zk-address</name>
+                <value>10.210.136.61:2181,10.210.136.62:2181,10.210.136.64:2181</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.cluster-id</name>
+                <value>yarn-test1</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.zk-state-store.parent-path</name>
+                <value>/rmstore/testyarn2</value>
+         </property>
+         <property>
+                <name>yarn.app.mapreduce.am.scheduler.connection.wait.interval-ms</name>
+                <value>5000</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.address.rm1</name>
+                <value>d136062.innet.dip.sina.com.cn:8032</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.scheduler.address.rm1</name>
+                <value>d136062.innet.dip.sina.com.cn:8030</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.webapp.address.rm1</name>
+                <value>d136062.innet.dip.sina.com.cn:8088</value>
+        </property>
+        <property>
+    		<name>yarn.resourcemanager.webapp.https.address.rm1</name>
+    		<value>d136062.innet.dip.sina.com.cn:8090</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.resource-tracker.address.rm1</name>
+                <value>d136062.innet.dip.sina.com.cn:8031</value>
+        </property>
+         <property>
+                <name>yarn.resourcemanager.admin.address.rm1</name>
+                <value>d136062.innet.dip.sina.com.cn:8033</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8032</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.scheduler.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8030</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.webapp.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8088</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.webapp.https.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8090</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.resource-tracker.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8031</value>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.admin.address.rm2</name>
+                <value>d136061.innet.dip.sina.com.cn:8033</value>
+        </property>
+        <property>
+                <name>yarn.client.failover-proxy-provider</name>
+                <value>org.apache.hadoop.yarn.client.ConfiguredRMFailoverProxyProvider</value>
+        </property>
+        <property>
+                <name>yarn.nodemanager.aux-services</name>
+                <value>mapreduce_shuffle</value>
+        </property>
+        <property>
+                <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+                <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+        </property>
+        <property>
+                <description>List of directories to store localized files in.</description>
+                <name>yarn.nodemanager.local-dirs</name>
+                <value>file:///data0/yarn/local,file:///data1/yarn/local,file:///data2/yarn/local,file:///data3/yarn/local
+                </value>
+        </property>
+        <property>
+                <description>Where to store container logs.</description>
+                <name>yarn.nodemanager.log-dirs</name>
+                <value>file:///data0/yarn/logs,file:///data1/yarn/logs,file:///data2/yarn/logs,file:///data3/yarn/logs</value></property>
+        <property>
+                <description>Classpath for typical applications.</description>
+                <name>yarn.application.classpath</name>
+                <value>
+                    $HADOOP_CONF_DIR,
+                     $HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,
+                     $HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,
+                     $HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,
+                     $HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*
+                </value>
+        </property>
+        <property>
+                <name>yarn.log-aggregation-enable</name>
+                <value>true</value> 
+        </property>
+        <property>
+                <name>yarn.log-aggregation.retain-seconds</name>
+                <value>604800</value>
+        </property>
+        <property>
+                <name>yarn.log-aggregation.retain-check-interval-seconds</name>
+                <value>3600</value>
+                <final>true</final>
+        </property>
+        <property>
+                <name>yarn.nodemanager.remote-app-log-dir</name>
+                <value>hdfs://testhadoop/yarn/apps</value>
+                <final>true</final>
+        </property>
+        <property>
+                <name>yarn.nodemanager.remote-app-log-dir-suffix</name>
+                <value>logs</value>
+                <final>true</final>
+        </property>
+        <property>
+                <name>yarn.nodemanager.log-aggregation.compression-type</name> 
+                <value>gz</value>
+        </property>
+        <!-- include and exclude list -->
+        <property>
+                <name>yarn.resourcemanager.nodes.include-path</name>
+                <value>/etc/hadoop/conf/include</value>
+                <description>Path to file with nodes to include.</description>
+        </property>
+        <property>
+                <name>yarn.resourcemanager.nodes.exclude-path</name>
+                <value>/etc/hadoop/conf/exclude</value>
+                <description>Path to file with nodes to exclude.</description>
+        </property> 
+        <property>
+                <description>Amount of physical memory, in MB, that can be allocated 
+                    for containers.</description>
+                <name>yarn.nodemanager.resource.memory-mb</name>
+                <value>8192</value>
+        </property>
+        <property>
+                <name>yarn.nodemanager.resource.cpu-vcores</name>
+                <value>16</value>
+        </property>
+        <property>
+                <name>yarn.scheduler.minimum-allocation-mb</name>
+                <value>512</value>
+        </property>
+        <property>
+                <name>yarn.scheduler.maximum-allocation-mb</name>
+                <value>2048</value>
+        </property>
+        <property>
+                <description>The minimum allocation for every container request at the RM,
+                in terms of virtual CPU cores. Requests lower than this won't take effect,
+                and the specified value will get allocated the minimum.</description>
+                <name>yarn.scheduler.minimum-allocation-vcores</name>
+                <value>1</value>
+        </property>
+        <property>
+                <description>The maximum allocation for every container request at the RM,
+                in terms of virtual CPU cores. Requests higher than this won't take effect,
+                and will get capped to this value.</description>
+                <name>yarn.scheduler.maximum-allocation-vcores</name>
+                <value>4</value>
+        </property>
+        <!-- scheduler -->
+        <property>
+                <name>yarn.resourcemanager.scheduler.class</name>
+                <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+                <final>true</final>
+        </property>
+        <property>
+                <name>yarn.scheduler.fair.preemption</name>
+                <value>true</value>
+        </property>
+        
+        <property>
+                <name>yarn.scheduler.fair.allocation.file</name>
+                <value>/etc/hadoop/conf/fair-scheduler.xml</value>
+        </property>
+        <property>
+                <name>yarn.scheduler.fair.sizebasedweight</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>yarn.scheduler.fair.user-as-default-queue</name>
+                <value>false</value>
+        </property>
+        <property>
+                <name>yarn.scheduler.fair.assignmultiple</name>
+                <value>false</value>
+                <final>true</final>
+        </property>
+		<property>
+		<name>yarn.timeline-rpcService.hostname</name>
+		<value>d136061.innet.dip.sina.com.cn</value>
+	</property>
+	<property>
+		<name>yarn.timeline-rpcService.generic-application-history.enabled</name>
+		<value>true</value>
+	</property>   
+</configuration>
+

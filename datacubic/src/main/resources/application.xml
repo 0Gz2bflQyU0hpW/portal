@@ -1,0 +1,58 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd" default-autowire="byName">
+    <context:annotation-config/>
+    <context:component-scan base-package="com.sina.dip.data.mysql"/>
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="jdbcUrl">
+            <value>
+                <![CDATA[ jdbc:mysql://m6103i.eos.grid.sina.com.cn:6103/dip_data_analyze?user=dipadmin&password=dipqwe123&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false ]]>
+            </value>
+        </property>
+        <property name="user">
+            <value>dipadmin</value>
+        </property>
+        <property name="password">
+            <value>dipqwe123</value>
+        </property>
+        <property name="preferredTestQuery">
+            <value>select count(1) from user</value>
+        </property>
+        <property name="idleConnectionTestPeriod">
+            <value>30</value>
+        </property>
+        <property name="maxIdleTime">
+            <value>25000</value>
+        </property>
+        <property name="acquireIncrement">
+            <value>5</value>
+        </property>
+        <property name="testConnectionOnCheckout">
+            <value>true</value>
+        </property>
+        <property name="testConnectionOnCheckin">
+            <value>true</value>
+        </property>
+        <property name="maxPoolSize">
+            <value>100</value>
+        </property>
+        <property name="minPoolSize">
+            <value>15</value>
+        </property>
+        <property name="initialPoolSize">
+            <value>15</value>
+        </property>
+        <!--
+         当连接池用完时客户端调用getConnection()后等待获取新连接的时间，超时后将抛出 SQLException,如设为0则无限期等待。单位毫秒。Default:
+                    0
+        -->
+        <property name="checkoutTimeout">
+            <value>30000</value>
+        </property>
+    </bean>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="txManager"/>
+</beans>

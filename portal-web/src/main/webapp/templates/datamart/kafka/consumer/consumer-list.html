@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/loading/load.css"/>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>consumer列表</title>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 数据集市
+    <span class="c-gray en">&gt;</span> kafka<span class="c-gray en">&gt;</span> consumer列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+       href="javascript:location.replace(location.href);">
+        <i class="Hui-iconfont">&#xe68f;</i>
+    </a>
+</nav>
+<div class="page-container">
+    <div class="text-c">
+        <span class="select-box inline">
+		<select class="select" id="byField">
+			<option value="consumer_group">根据消费者组名称查找</option>
+			<option value="topic_name">根据topic名称查询</option>
+			<option value="consumer_product">根据产品线名称查找</option>
+			<option value="contact_person">根据联系人查找</option>
+		</select>
+		</span> 创建日期范围：
+        <input id="start" placeholder="请输入日期" class="laydate-icon"
+               onClick="laydate({elem:'#start',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        -
+        <input id="end" placeholder="请输入日期" class="laydate-icon"
+               onClick="laydate({elem:'#end',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        <input type="text" name="" id="keyword" placeholder=" 名称" style="width:250px" class="input-text"/>
+        <button name="" id="search-consumer" class="btn btn-success"><i class="Hui-iconfont">&#xe665;</i> 搜consumer
+        </button>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-primary radius" href="javascript:;"
+               onclick="consumer_add('添加consumer','/datamart/kafka/consumer/consumer-add.html')">
+				<i class="Hui-iconfont">&#xe600;</i> 添加consumer</a>
+		</span>
+    </div>
+
+
+    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+
+        <div class="mt-20">
+            <table id="consumer-table"
+                   class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                <tr class="text-c">
+                    <th width="30">ID</th>
+                    <th width="160">topic名称</th>
+                    <th width="140">消费者组</th>
+                    <th width="120">产品线</th>
+                    <th width="100">联系人</th>
+                    <th width="110">创建时间</th>
+                    <th width="110">更新时间</th>
+                    <th width="60">操作</th>
+                </tr>
+                </thead>
+                <tbody id="talbe_list_body">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<!--<script type="text/javascript" src="/lib/My97DatePicker/4.8/WdatePicker.js"></script>-->
+<script type="text/javascript" src="/js/laydate.js"></script>
+<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+<script src="/js/loading/load-min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/usedatatable.js"></script>
+
+<script type="text/javascript">
+
+    /*添加数据集*/
+    function consumer_add(title, url) {
+        layer_show(title, url, '800', '600');
+    }
+
+    $(document).ready(function () {
+        //定义列的显示
+        var columns = [
+            {data: "id"},
+            {data: "topicName"},
+            {data: "consumerGroup"},
+            {data: "consumerProduct"},
+            {data: "contactPerson"},
+            {data: "createTime"},
+            {data: "updateTime"},
+            {
+                data: "", orderable: false, render: function (data, type, row, meta) {
+                    var str = "";
+                    str += '<a class="ml-5" title="详情"  >'
+                        + '<i class="Hui-iconfont">&#xe665;</i></a>'
+                        + '<a class="ml-5" title="编辑"  >'
+                        + '<i class="Hui-iconfont">&#xe6df;</i></a>'
+                        + '<a class="ml-5" title="删除" >'
+                        + '<i class="Hui-iconfont">&#xe6e2;</i></a>';
+                    return str;
+                }
+            }
+        ];
+        //定义DataTable
+        var datatable = createMyDataTable(columns);
+        //添加搜索功能
+        addSearching('search-consumer',datatable);
+        //添加操作功能
+        operation3(datatable, 'consumer');
+    });
+</script>
+</body>
+</html>

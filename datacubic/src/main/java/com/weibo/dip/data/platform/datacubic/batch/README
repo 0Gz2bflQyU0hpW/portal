@@ -1,0 +1,33 @@
+1.配置说明
+
+配置文件在batch-conf文件夹中，包括
+【destination.config】 ：输出目录，输出格式
+
+destination.output.path=/Users/delia/Desktop/result/res (注：数据为测试的本地数据，需要修改)
+destination.output.mapper=default
+
+
+【source.config】 ：输入信息配置
+
+source.input.path=/Users/delia/Desktop/filterlog (注：数据为测试的本地数据，需要修改)
+source.input.format=json
+source.input.columns=subtype,result_code,during_time,net_time,time,__date,ua,network_type,ip
+source.table=fulllink
+source.src.colunm.name=src_data //建表建立源数据列的列名
+
+【sql.config】 ：sql语句
+是否建立源数据列，可能会影响sql语句的编写，勿忘。
+
+2.入口参数说明
+（1）传入一个参数：【配置路径】
+（2）传入两个参数：【配置路径 srcColumnName】  ： 第二个参数true表示建表时添加的源数据列的列名。
+
+3.暂存问题：
+
+（1）输出结果，源数据的格式一言难尽。如下例子。src_data对应为源数据。满眼的\"。
+{"system":"android","src_data":"{\"act\":\"performance\",\"subtype\":\"refresh_feed\",\"parseTime\":\"113\",\"feed_type\":\"3\",\"result_code\":\"0\",\"during_time\":\"580\",\"network_type\":\"wifi\",\"time\":\"1486483063164\",\"groupid\":\"100013320116615\",\"netDataCount\":\"16\",\"request_url\":\"https:\\/\\/api.weibo.cn\\/2\\/statuses\\/unread_friends_timeline\",\"net_time\":\"286\",\"load_type\":\"1\",\"ip\":\"106.114.190.245\",\"ua\":\"vivo-vivo X6S A__weibo__7.0.0__android__android5.1.1\",\"from\":\"1070095010\",\"networktype\":\"wifi\",\"uid\":\"3320116615\"}","_index":"dip-fulllink","app_version":"7.0.0","during_time":580.0,"net_time":286.0,"system_version":"android5.1.1","_type":"version1","result_code":"0","timestamp":"2017-02-07T15:57:00.000Z"}
+
+（2）关于入口参数的指定.
+     源码BatchEngine 239行，
+     Source source = getDataSource(sourceConfig, srcColumnName);
+     有可能传入空字符串，暂时是不得已而为之。。。。详讨。

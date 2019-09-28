@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!--
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://10.210.136.61</value>
+    </property>
+    -->
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://nyx</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/data2/tmp</value>
+    </property>
+    <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>first.zk.nyx.dip.weibo.com:2181,second.zk.nyx.dip.weibo.com:2181,third.zk.nyx.dip.weibo.com:2181,fourth.zk.nyx.dip.weibo.com:2181,fifth.zk.nyx.dip.weibo.com:2181,sixth.zk.nyx.dip.weibo.com:2181,seventh.zk.nyx.dip.weibo.com:2181</value>
+    </property>
+    <property>
+        <name>fs.trash.interval</name>
+        <value>10080</value>
+    </property>
+</configuration>

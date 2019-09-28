@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+    <script type="text/javascript" src="http://libs.useso.com/js/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="http://cdn.bootcss.com/css3pie/2.0beta1/PIE_IE678.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/static/h-ui/css/H-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>
+    <link type="text/css" rel="stylesheet" href="font/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css"/>
+    <!--[if IE 7]>
+    <link href="http://www.bootcss.com/p/font-awesome/assets/css/font-awesome-ie7.min.css" rel="stylesheet"
+          type="text/css"/>
+    <![endif]-->
+    <title>预警策略详情</title>
+</head>
+<body>
+<div class="pd-20">
+    <table class="table">
+        <tbody>
+        <tr>
+            <th class="text-r">应用名称：</th>
+            <td id="appName"></td>
+        </tr>
+        <tr>
+            <th class="text-r">镜像名称：</th>
+            <td id="imageName"></td>
+        </tr>
+        <tr>
+            <th class="text-r">镜像版本：</th>
+            <td id="imageTag"></td>
+        </tr>
+        <tr>
+            <th class="text-r">driver_cores：</th>
+            <td id="driverCores"></td>
+        </tr>
+        <tr>
+            <th class="text-r">driver_memory：</th>
+            <td id="driverMemory"></td>
+        </tr>
+        <tr>
+            <th class="text-r">executor_nums：</th>
+            <td id="executorNums"></td>
+        </tr>
+        <tr>
+            <th class="text-r">executor_cores：</th>
+            <td id="executorCores"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="120">executor_mems：</th>
+            <td id="executorMems"></td>
+        </tr>
+        <tr>
+            <th class="text-r">confs：</th>
+            <td id="confs"></td>
+        </tr>
+        <tr>
+            <th class="text-r">files：</th>
+            <td id="files"></td>
+        </tr>
+        <tr>
+            <th class="text-r">queue：</th>
+            <td id="queue"></td>
+        </tr>
+        <tr>
+            <th class="text-r">class_name：</th>
+            <td id="className"></td>
+        </tr>
+        <tr>
+            <th class="text-r">jar_name：</th>
+            <td id="jarName"></td>
+        </tr>
+        <tr>
+            <th class="text-r">所属部门：</th>
+            <td id="department"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">collection：</th>
+            <td id="collection"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_alive：</th>
+            <td id="alertAlive"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_ repetitive：</th>
+            <td id="alertRepetitive"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_ repetitive_group：</th>
+            <td id="alertRepetitiveGroup"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_active：</th>
+            <td id="alertActive"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_active_threshold：</th>
+            <td id="alertActiveThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_accumulation ：</th>
+            <td id="alertAccumulation"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_accumulation_threshold ：</th>
+            <td id="alertAccumulationThreshold"></td>
+        </tr>
+       <!-- <tr>
+            <th class="text-r" width="220">alert_recently_receive_alert ：</th>
+            <td id="alertRecentlyReceivealert"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_recently_receive_threshold ：</th>
+            <td id="alertRecentlyReceiveThreshold"></td>
+        </tr>-->
+        <tr>
+            <th class="text-r" width="220">alert_receive ：</th>
+            <td id="alertReceive"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_receive_threshold ：</th>
+            <td id="alertReceiveThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_scheduling_delay ：</th>
+            <td id="alertSchedulingDelay"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_scheduling_delay_threshold：</th>
+            <td id="alertSchedulingDelayThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_processing ：</th>
+            <td id="alertProcessing"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_processing_threshold ：</th>
+            <td id="alertProcessingThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_active_processing_time_threshold ：</th>
+            <td id="alertActiveProcessingTimeThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_active_processing_num_threshold ：</th>
+            <td id="alertActiveProcessingNumThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_active_processing ：</th>
+            <td id="alertActiveProcessing"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_inactive_receivers ：</th>
+            <td id="alertInactiveReceivers"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_inactive_receivers_threshold：</th>
+            <td id="alertInactiveReceiversThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_inactive_executors ：</th>
+            <td id="alertInactiveExecutors"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_inactive_executors_threshold：</th>
+            <td id="alertInactiveExecutorsThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_error：</th>
+            <td id="alertError"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_error_threshold：</th>
+            <td id="alertErrorThreshold"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_interval</th>
+            <td id="alertInterva"></td>
+        </tr>
+        <tr>
+            <th class="text-r" width="220">alert_group：</th>
+            <td id="alertGroup"></td>
+        </tr>
+
+        <tr>
+            <th class="text-r">state：</th>
+            <td id="state"></td>
+        </tr>
+        <tr>
+            <th class="text-r">app_id：</th>
+            <td id="appId"></td>
+        </tr>
+        <tr>
+            <th class="text-r">start_time：</th>
+            <td id="startTime"></td>
+        </tr>
+        <tr>
+            <th class="text-r">is_available：</th>
+            <td id="isAvailable"></td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        /*获取id*/
+        var thisURL = window.location.href;
+        var getval = thisURL.split('?')[1];
+        var appname = getval.split("=")[1];
+
+        /*获取某id预警策略信息*/
+        $.ajax({
+            type: 'POST',
+            url: "/realtime/application/findbyname",
+            data: {
+                'appname': appname
+            },
+            success: function (app) {
+                $('#id').html(app.id);
+                $('#appName').html(app.appName);
+                $('#imageName').html(app.imageName);
+                $('#imageTag').html(app.imageTag);
+                $('#driverCores').html(app.driverCores);
+                $('#driverMemory').html(app.driverMemory);
+                $('#executorNums').html(app.executorNums);
+                $('#executorCores').html(app.executorCores);
+                $('#executorMems').html(app.executorMems);
+                $('#confs').html(app.confs);
+                $('#files').html(app.files);
+                $('#queue').html(app.queue);
+                $('#className').html(app.className);
+                $('#jarName').html(app.jarName);
+                $('#department').html(app.department);
+                $('#state').html(app.appstate);
+                $('#appId').html(app.appId);
+                $('#startTime').html(app.lastUpdateTime);
+                $('#isAvailable').html(app.isAvailable);
+
+
+                $('#collection').html(app.collection);
+                $('#alertAlive').html(app.alertAlive);
+
+                $('#alertRepetitive').html(app.alertRepetitive);
+                $('#alertRepetitiveGroup').html(app.alertRepetitiveGroup);
+
+                $('#alertActive').html(app.alertActive);
+                $('#alertActiveThreshold').html(app.alertActiveThreshold);
+
+                $('#alertAccumulation').html(app.alertAccumulation);
+                $('#alertAccumulationThreshold').html(app.alertAccumulationThreshold);
+
+                /*$('#alertRecentlyReceivealert').html(app.alertRecentlyReceive);
+                $('#alertRecentlyReceiveThreshold').html(app.alertRecentlyReceiveThreshold);*/
+
+                $('#alertReceive').html(app.alertReceive);
+                $('#alertReceiveThreshold').html(app.alertReceiveThreshold);
+
+                $('#alertSchedulingDelay').html(app.alertSchedulingDelay);
+                $('#alertSchedulingDelayThreshold').html(app.alertSchedulingDelayThreshold);
+
+                $('#alertProcessing').html(app.alertProcessing);
+                $('#alertProcessingThreshold').html(app.alertProcessingThreshold);
+
+                $('#alertActiveProcessing').html(app.alertActiveProcessing);
+                $('#alertActiveProcessingTimeThreshold').html(app.alertActiveProcessingTimeThreshold);
+                $('#alertActiveProcessingNumThreshold').html(app.alertActiveProcessingNumThreshold);
+
+                $('#alertInactiveReceivers').html(app.alertInactiveReceivers);
+                $('#alertInactiveReceiversThreshold').html(app.alertInactiveReceiversThreshold);
+
+                $('#alertInactiveExecutors').html(app.alertInactiveExecutors);
+                $('#alertInactiveExecutorsThreshold').html(app.alertInactiveExecutorsThreshold);
+
+                $('#alertError').html(app.alertError);
+                $('#alertErrorThreshold').html(app.alertErrorThreshold);
+
+                $('#alertInterva').html(app.alertInterval);
+                $('#alertGroup').html(app.alertGroup);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

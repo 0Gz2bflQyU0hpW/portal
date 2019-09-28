@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/loading/load.css"/>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>image</title>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 实时
+    <span class="c-gray en">&gt;</span> 应用信息
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px"
+       href="javascript:location.replace(location.href);">
+        <i class="Hui-iconfont">&#xe68f;</i>
+    </a>
+</nav>
+<div class="page-container">
+    <!-- <div class="text-c">
+         <span class="select-box inline">
+         <select class="select" id="byField">
+             <option value="image_name">根据镜像名称查找</option>
+             <option value="app_name">根据应用名称查找</option>
+         </select>
+         </span> 创建日期范围：
+         <input id="start" placeholder="请输入日期" class="laydate-icon"
+                onClick="laydate({elem:'#start',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+         -
+         <input id="end" placeholder="请输入日期" class="laydate-icon"
+                onClick="laydate({elem:'#end',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+         <input type="text" name="" id="keyword" placeholder=" 名称" style="width:250px" class="input-text"/>
+         <button name="" id="search-image" class="btn btn-success" type="submit"><i
+                 class="Hui-iconfont">&#xe665;</i> 搜image
+         </button>
+     </div>-->
+    <div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a class="btn btn-primary radius" href="javascript:;"
+               onclick="app_add('添加应用信息','/realtime/application/application-add.html')">
+				<i class="Hui-iconfont">&#xe600;</i> 添加应用信息</a>
+		</span>
+
+    </div>
+
+    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer">
+        <div class="mt-20">
+            <table id="image-table"
+                   class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                <tr class="text-c">
+                    <th width="30">编号</th>
+                    <th width="120">应用名称</th>
+                    <th width="120">状态</th>
+                    <th width="120">队列</th>
+                    <th width="120">启动应用</th>
+                    <th width="120">停止应用</th>
+                    <th width="120">重启应用</th>
+                    <th width="120">操作</th>
+                </tr>
+                </thead>
+                <tbody id="talbe_list_body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/js/laydate.js"></script>
+<script type="text/javascript" src="/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/lib/laypage/1.2/laypage.js"></script>
+<script src="/js/loading/load-min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/usedatatable.js"></script>
+
+<script type="text/javascript">
+
+    var creator;
+    $.ajax({
+        type: 'POST',
+        url: "/getSession",
+        success: function (data) {
+            creator = data.username;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+        }
+    });
+    //定义列的显示
+    var columns = [
+        {data: "id"},
+        {data: "appName"},
+        {
+            data: "appstate", render: function (data, type, row, meta) {
+                var str = "";
+                str += data;
+                return str;
+            }
+        },
+        {data: "queue"},
+        {
+            data: "", orderable: false, render: function (data, type, row, meta) {
+                var str = "";
+                str += '<a class="ml-5" title="启动"  >'
+                    + '<i class="Hui-iconfont">&#xe6e1;</i></a>';
+                return str;
+            }
+        },
+        {
+            data: "", orderable: false, render: function (data, type, row, meta) {
+                var str = "";
+                str += '<a class="ml-5" title="停止"  >'
+                    + '<i class="Hui-iconfont">&#xe631;</i></a>';
+                return str;
+            }
+        },
+        {
+            data: "", orderable: false, render: function (data, type, row, meta) {
+                var str = "";
+                str += '<a class="ml-5" title="重启"  >'
+                    + '<i class="Hui-iconfont">&#xe6f7;</i></a>';
+                return str;
+            }
+        },
+        {
+            data: "", orderable: false, render: function (data, type, row, meta) {
+                var str = "";
+                str += '<a class="ml-5" title="编辑"  >'
+                    + '<i class="Hui-iconfont">&#xe6df;</i></a>'
+                    + '<a class="ml-5" title="删除"  >'
+                    + '<i class="Hui-iconfont">&#xe6e2;</i></a>'
+                    + '<a class="ml-5" title="详情"  >'
+                    + '<i class="Hui-iconfont">&#xe665;</i></a>';
+                return str;
+
+            }
+        }
+    ];
+
+    function startapp(appname) {
+        $.ajax({
+            type: 'POST',
+            url: "/realtime/application/start",
+            data: {
+                'appname': appname,
+                'creator': creator
+            },
+            success: function (str) {
+                if (str === 1) {
+                    layer.msg('启动命令发送成功', {icon: 6, time: 1000});
+                } else if (str === -1) {
+                    layer.msg('正在启动，请等待', {icon: 5, time: 1000});
+                } else {
+                    layer.msg(str, {icon: 5, time: 1000});
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    }
+
+    function stopapp(appname) {
+        $.ajax({
+            type: 'POST',
+            url: "/realtime/application/stop",
+            data: {
+                'appname': appname
+            },
+            success: function (str) {
+                if (str === 1) {
+                    layer.msg('停止命令发送成功', {icon: 6, time: 1000});
+                } else if (str === -1) {
+                    layer.msg('正在停止或不能停止，请等待', {icon: 5, time: 1000});
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+
+    }
+
+    function restartapp(appname) {
+        $.ajax({
+            type: 'POST',
+            url: "/realtime/application/restart",
+            data: {
+                'appname': appname
+            },
+            success: function (str) {
+                if (str === 1) {
+                    layer.msg('重启命令发送成功', {icon: 6, time: 1000});
+                } else if (str === -1) {
+                    layer.msg('正在重启或不能重启，请等待', {icon: 5, time: 1000});
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+
+    }
+
+    function deleteinfo(appname, datatable) {
+        layer.confirm('确定要删除吗', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: "/realtime/application/delete",
+                data: {
+                    'appname': appname
+                },
+                success: function (str) {
+                    datatable.draw(false);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+                }
+            });
+        });
+
+    }
+
+    //添加应用
+    function app_add(title, url) {
+        layer_show(title, url, '700', '800');
+    }
+
+    function showinfo(title, url) {
+        layer_show(title, url, '600', '800');
+    }
+
+    function updateinfo(title, url) {
+        layer_show(title, url, '700', '800');
+    }
+
+    $(document).ready(function () {
+
+        //构造DataTable
+        var datatable = createMyDataTable(columns);
+
+        $('#talbe_list_body').on(
+            'click', 'tr>td>a', function () {
+                var td = $(this).parent('td');
+                var tr = $(this).parents('tr');
+                var index = $(td).index();
+                //var id = datatable.row(tr).data().id;
+                var appname = datatable.row(tr).data().appName;
+                if (index == 4) {
+                    startapp(appname);
+                } else if (index == 5) {
+                    stopapp(appname);
+                } else if (index == 6) {
+                    restartapp(appname);
+                } else {
+                    var aindex = $(this).index();
+                    if (aindex == 0) {
+                        updateinfo('修改app', '/realtime/application/application-update.html?appname=' + appname);
+                    } else if (aindex == 1) {
+                        deleteinfo(appname, datatable);
+                    } else if (aindex == 2) {
+                        showinfo('查看app', '/realtime/application/application-show.html?appname=' + appname);
+                    }
+                }
+            }
+        );
+
+        //定时刷新
+        setInterval(function () {
+            datatable.draw(false);
+        }, 10000);
+    });
+</script>
+</body>
+</html>

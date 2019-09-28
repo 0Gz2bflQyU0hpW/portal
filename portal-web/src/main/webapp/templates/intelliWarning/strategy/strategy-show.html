@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+    <script type="text/javascript" src="http://libs.useso.com/js/respond.js/1.4.2/respond.min.js"></script>
+    <script type="text/javascript" src="http://cdn.bootcss.com/css3pie/2.0beta1/PIE_IE678.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/static/h-ui/css/H-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>
+    <link type="text/css" rel="stylesheet" href="font/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css"/>
+    <!--[if IE 7]>
+    <link href="http://www.bootcss.com/p/font-awesome/assets/css/font-awesome-ie7.min.css" rel="stylesheet"
+          type="text/css"/>
+    <![endif]-->
+    <title>预警策略详情</title>
+</head>
+<body>
+<div class="pd-20">
+    <table class="table">
+        <tbody>
+        <tr>
+            <th class="text-r" width="120">id：</th>
+            <td id="id"></td>
+        </tr>
+        <tr>
+            <th class="text-r">策略名称：</th>
+            <td id="strategyName"></td>
+        </tr>
+        <tr>
+            <th class="text-r">更新日期：</th>
+            <td id="updateTime"></td>
+        </tr>
+        <tr>
+            <th class="text-r">业务名称：</th>
+            <td id="business"></td>
+        </tr>
+        <tr>
+            <th class="text-r" style="vertical-align:top;">维度条件：</th>
+            <td id="dimensions">
+                start_time:1<br/>
+                request_time:2<br/>
+                m_request_url:3<br/>
+                timestamp:4
+            </td>
+        </tr>
+        <tr>
+            <th class="text-r" style="vertical-align:top;">指标监控策略：</th>
+            <td id="metrics">
+            </td>
+        </tr>
+        <tr>
+            <th class="text-r">报警人：</th>
+            <td id="contactPerson"></td>
+        </tr>
+        <tr>
+            <th class="text-r">报警开关：</th>
+            <td id="status"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        /*获取id*/
+        var thisURL = window.location.href;
+        var getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+
+        /*获取某id预警策略信息*/
+        $.ajax({
+            type: 'POST',
+            url: "/intelliWarning/strategy/show",
+            data: {
+                'id': id
+            },
+            success: function (data) {
+                var updatetime = new Date(data.strategy.updateTime);
+                var time = updatetime.getFullYear()+"-"+(updatetime.getMonth()+1)+"-"+updatetime.getDate()+" "+updatetime.getHours()+":"+updatetime.getMinutes()+":"+updatetime.getSeconds();
+                $("#id").html(data.strategy.id);
+                $("#strategyName").html(data.strategy.strategyName);
+                $("#updateTime").html(time);
+                $("#business").html(data.strategy.business);
+                $("#contactPerson").html(data.strategy.contactPerson);
+                $("#status").html(data.strategy.status);
+
+                var dimensions = data.strategy.dimensions;
+                var metrics = data.strategy.metrics;
+
+                /*加载维度内容*/
+                var dimensionsList = eval('(' + dimensions + ')');
+                var diStr = "";
+                for (var i in dimensionsList) {                    //遍历json对象的每个key/value对
+                    diStr += i + "：" + dimensionsList[i] + "<br/>";
+                }
+                $("#dimensions").html(diStr);
+
+
+                /*加载指标内容*/
+                var metricsList = JSON.parse(metrics);              //遍历json数组的每个元素
+                var meStr = "";
+                var metricsNameSet = new Array();
+                var index;
+                for (var i = 0; i < metricsList.length; i++) {
+                    var metricsName = metricsList[i].metric;
+                    var metricsStrategyName = getMetricsStrategyName(metricsList[i].name);
+
+                    var isInArray = false;
+                    for (var j = 0; j < metricsNameSet.length; j++) {
+                        if (metricsNameSet[j]["name"] == metricsName) {
+                            isInArray = true;
+                            index = j;
+                            break;
+                        }
+                    }
+
+                    if (isInArray == false) {
+                        var metricsNameCont = {};
+                        metricsNameCont['name'] = metricsName;
+                        metricsNameCont['html'] = '<dl class="show-metrics"><dt>' + metricsName + '</dt><dd><dl class="cl metrics-list2"><dt>' + metricsStrategyName
+                            + '</dt><dd>';
+                        for (var j in metricsList[i].params) {                    //遍历json对象的每个key/value对
+                            metricsNameCont['html'] += j + ":" + metricsList[i].params[j] + '<br/>';
+                        }
+                        metricsNameCont['html'] += '</dd></dl>';
+                        metricsNameSet.push(metricsNameCont);
+                    } else {
+                        metricsNameSet[index]['html'] += '<dl class="cl metrics-list2"><dt>' + metricsStrategyName + '</dt><dd>';
+                        for (var j in metricsList[i].params) {                    //遍历json对象的每个key/value对
+                            metricsNameCont['html'] += j + ":" + metricsList[i].params[j] + '<br/>';
+                        }
+                        metricsNameCont['html'] += '</dd></dl>';
+                    }
+                }
+                for (var i = 0; i < metricsNameSet.length; i++) {
+                    metricsNameSet[i]['html'] += '</dd></dl>';
+                    meStr += metricsNameSet[i]['html'];
+                }
+                $("#metrics").append(meStr);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

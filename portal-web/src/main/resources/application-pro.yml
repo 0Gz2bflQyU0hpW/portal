@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:mysql://d136092.innet.dip.weibo.com:3307/portal?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: mysqladmin
+
+# HdfsFile

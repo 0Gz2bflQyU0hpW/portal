@@ -1,0 +1,301 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico" />
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <!--/meta 作为公共模版分离出去-->
+
+    <title>新增预警策略</title>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-strategy-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02"><span class="c-red">*</span>策略名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="strategyName" name="strategyName">
+                <span style="text-align: right;" id="strategyName-text"></span>
+                </input>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02"><span class="c-red">*</span>业务名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box">
+					<select class="select" size="1" name="business" id="business">
+						<option value="">请选择业务名称</option>
+					</select>
+				</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02">维度条件：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <table id="dimensions" style="line-height:1.6;">
+                </table>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02">指标监控策略：</label>
+            <div class="formControls col-xs-8 col-sm-9" id ="metrics">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02"><span class="c-red">*</span>报警人：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="contactPerson" id="contactPerson" cols="" rows="" class="textarea"  placeholder="邮箱前缀，多人用逗号隔开" onKeyUp="textarealength(this,100)"></textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02"><span class="c-red">*</span>报警开关：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box">
+					<select class="select" name="switchStatus" id="switchStatus">
+						<option value="on">on</option>
+						<option value="off">off</option>
+					</select>
+				</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button id="postBtn" class="btn btn-primary radius" type="submit">提交</button>
+                <a onclick="closeLayer()"><button class="btn btn-default radius btn-style" type="button">返回列表</button></a>
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+
+<script type="text/javascript">
+    /*添加bussiness下拉菜单中的内容*/
+    $(document).ready(function() {
+        listBusiness();
+    });
+
+    /*绑定business下拉菜单change事件，当下拉框的值改变时改变维度以及指标的值*/
+    $("#business").change(function() {
+        //获取下拉框选中项的value属性值
+        var business = $("#business").val();
+        $.ajax({
+            type: 'POST',
+            url: "/getDimensionsAndMetrics",
+            data: {
+                'business': business
+            },
+            success: function (data) {
+                $("#dimensions").empty();
+                $("#metrics").empty();
+
+                /*加载维度条件*/
+                var diContent = '';
+                for(var i=0; i< data.dimensions.length; i++) {
+                    diContent += '<tr><td name="dimensionsName">' + data.dimensions[i]
+                        + '</td><td><input type="text" class="input-text" id="' + data.dimensions[i]
+                        + '"></td></tr>'
+                }
+                $('#dimensions').append(diContent);
+
+                /*加载指标*/
+                var meContent = '';
+                for(var i=0; i< data.metrics.length; i++) {
+                    meContent += '<dl class="metrics-list"><dt><label><input type="checkbox" onchange="javascript:showSection(this)" name="metricsName" value="' + data.metrics[i]
+                        + '"/>' + data.metrics[i] + '</label></dt><dd id="' + data.metrics[i] + '"></dd></dl>';
+                }
+                $('#metrics').append(meContent);
+
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    });
+
+    function showSection(obj) {
+        if($(obj).prop("checked")){
+            $('#'+obj.value).append(sectionContent(obj.value));
+            addCheckboxEffect();   //添加多选框效果
+        }else{
+            $('#'+obj.value).empty();
+        }
+    }
+
+    /*checkbox改变时input的禁止和允许效果*/
+    function loadInput(obj) {
+        var statisticsId = obj.name + '_' + obj.value;
+        //选中操作
+        if($(obj).prop("checked")){
+            $("input[name="+statisticsId+"]").next("input").removeAttr("disabled");
+        }else{
+            $("input[name="+statisticsId+"]").next("input").attr("disabled","disabled");
+        }
+    }
+
+    /*后台校验策略名称的唯一性*/
+    $("#strategyName").blur(function() {
+        var strategyName = $("#strategyName").val();
+        $.ajax({
+            type: 'POST',
+            url: "/intelliWarning/strategy/validate",
+            data: {
+                'strategyName': strategyName
+            },
+            success: function (data) {
+                if (data == 1) {
+                    $("#strategyName-text").html("该预警策略已存在");
+                    $("#strategyName-text").css("color", "red");//给提示设置一个红字体颜色
+
+                } else if(data == 0 && strategyName != ""){
+
+                    $("#strategyName-text").html("该策略名可用");
+                    $("#strategyName-text").css("color", "green");//给提示设置一个绿字体颜色
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    });
+
+    /*表单验证*/
+    $().ready(function() {
+        $("#form-strategy-add").validate({
+            onsubmit:function(element) { $(element).valid(); },// 开启提交时验证
+            onfocusout:function(element) { $(element).valid(); },// 开启失去焦点时验证
+
+            /*去除左侧空格*/
+            onkeyup: function(element, event) {
+                var value = this.elementValue(element).replace(/^\s+/g, "");
+                $(element).val(value);
+            },
+
+            rules: {　　　　//规则
+                strategyName: {　　//要对应相对应的input中的name属性
+                    required: true
+                },
+                business: {
+                    required: true
+                },
+                contactPerson: {
+                    required: true
+                },
+            },
+            messages:{　　　　//验证错误信息
+                strategyName: {
+                    required: "请输入策略名"
+                },
+                business: {
+                    required: "请选择业务名称"
+                },
+                contactPerson: {
+                    required: "请输入报警人"
+                },
+            },
+            submitHandler: function(form) { //通过之后回调
+                var strategy={};
+                strategy.strategyName=$('#strategyName').val();
+                strategy.business=$('#business').val();
+                strategy.contactPerson=$('#contactPerson').val();
+                strategy.status=$('#switchStatus').val();
+
+                /*获取dimensions的值(json对象)*/
+                dimensionsObj = {};
+                var dimensionsName = document.getElementsByName('dimensionsName');
+                for(var i = 0; i < dimensionsName.length; i++){
+                    if($('#'+dimensionsName[i].textContent).val() != "") {
+                        dimensionsObj[dimensionsName[i].textContent] = $('#'+dimensionsName[i].textContent).val();
+                    }
+                }
+                strategy.dimensions = JSON.stringify(dimensionsObj);
+
+                /*获取metrics的值（数组，数组的每个值是json对象）*/
+                metricsObj = new Array();
+                var metricsNameList = document.getElementsByName('metricsName');              //获取metrics列表
+                for(var i = 0; i < metricsNameList.length; i++){
+                    if(metricsNameList[i].checked) {
+                        var metricsName = metricsNameList[i].value;                     //获取被选中的metrics名称
+                        var metricsStrategyList = document.getElementsByName(metricsName);           //获取被选中的metrics下的策略列表
+                        for(var j = 0; j < metricsStrategyList.length; j++) {
+                            if(metricsStrategyList[j].checked) {
+                                var metricsStrategyName = metricsStrategyList[j].value;               //获取被选中的策略名称
+                                var statisticsList = document.getElementsByName(metricsName+'_'+metricsStrategyName);        //获取被选中的策略下面的参数列表
+                                var oneStrategyParams = {};
+                                for (var k = 0; k < statisticsList.length; k++) {
+                                    if($('#'+statisticsList[k].name+'_'+statisticsList[k].value).val() != "") {                     //如果参数值不为空
+                                        oneStrategyParams[statisticsList[k].value] = $('#'+statisticsList[k].name+'_'+statisticsList[k].value).val();
+                                    }
+                                }
+
+                                var oneMetrics = {};
+                                if(JSON.stringify(oneStrategyParams) != "{}") {
+                                    oneMetrics["metric"] = metricsName;
+                                    oneMetrics["name"] = metricsStrategyList[j].value;
+                                    oneMetrics["params"] = oneStrategyParams;
+                                    metricsObj.push(oneMetrics);
+                                }
+                            }
+                        }
+                    }
+                }
+                strategy.metrics = JSON.stringify(metricsObj);
+
+                /*验证通过提交表单*/
+                $.ajax({
+                    type: 'POST',
+                    url: "/intelliWarning/strategy/create",
+                    contentType:'application/json',
+                    data:JSON.stringify(strategy),
+                    async:false,
+                    success:function(){
+                        var index=parent.layer.getFrameIndex(window.name);//获取当前弹出层的层级
+                        /*刷新list*/
+                        var bStopIndex = 0;
+                        var topWindow = $(window.parent.document);
+                        var iframe_box = topWindow.find("#iframe_box");
+                        iframe_box.find(".show_iframe").hide().eq(bStopIndex).show().find("iframe").attr("src","/intelliWarning/strategy/strategy-list.html");
+                        parent.layer.close(index);//关闭弹出层
+
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+                    },
+                });
+            },
+            invalidHandler: function(form, validator) {return false;}
+        });
+    });
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

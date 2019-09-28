@@ -1,0 +1,569 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="Bookmark" href="/favicon.ico"/>
+    <link rel="Shortcut Icon" href="/favicon.ico"/>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5shiv.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css"/>
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin"/>
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css"/>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <!--/meta 作为公共模版分离出去-->
+
+    <title>修改app</title>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-app-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">编号：</label>
+            <div class="formControls col-xs-6">
+                <p id="id"></p>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4">应用名称：</label>
+            <div class="formControls col-xs-6">
+                <p id="appName"></p>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">镜像名称：</label>
+            <div class="formControls col-xs-6">
+                <p id="imageName"></p>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4">镜像版本：</label>
+            <div class="formControls col-xs-6">
+                <input type="text" class="input-text" required="required" value="1.0" placeholder="" id="imageTag"
+                       name="imageTag"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">driver_cores：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="number" class="input-text" required="required" value="1" placeholder="数值类型"
+                       id="driverCores" name="driverCores"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">driver_memory：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="text" class="input-text" required="required" value="1g" placeholder="1g/2g..."
+                       id="driverMemory" name="driverMemory"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">executor_nums：</label>
+            <div class="formControls col-xs-6">
+                <input type="number" class="input-text" required="required" value="2" placeholder="数值类型"
+                       id="executorNums" name="executorNums"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">executor_cores：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="number" class="input-text" required="required" value="1" placeholder="数值类型"
+                       id="executorCores" name="executorCores"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">executor_mems：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="text" class="input-text" required="required" value="2g" placeholder="1g/2g.."
+                       id="executorMems" name="executorMems"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4">confs：</label>
+            <input type="button" name="add" value="add" id="addconfs">
+            <div class="formControls col-xs-6" id="confs">
+
+
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">files：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="text" class="input-text" value="" id="files" name="files"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">queue：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="text" class="input-text" value="back2" list="queuelist" id="queue" name="queue"/>
+                <datalist id="queuelist">
+                    <option value="back2">back2</option>
+                </datalist>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">class_name：</label>
+            <div class="formControls col-xs-6">
+                <input type="text" class="input-text" required="required" id="className" name="className"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4">jar_name：</label>
+            <div class="formControls col-xs-6">
+                <input type="text" class="input-text" required="required" id="jarName" name="jarName"/>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 ">所属部门：</label>
+            <div class="formControls col-xs-6">
+                <input type="text" class="input-text" value="dip" placeholder="" list="departmentlist" id="department"
+                       name="department"/>
+                <datalist id="departmentlist">
+                    <option value="dip">dip</option>
+                </datalist>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-02"><a id="moreinfo">more</a></label>
+        </div>
+        <div id="showmore">
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">collection：</label>
+                <div class="formControls col-xs-6">
+                    <input type="number" class="input-text" value="0" placeholder="" id="collection"/>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">alert_alive：</label>
+                <div class="formControls col-xs-6">
+                    <input type="number" class="input-text" value="1" placeholder="" id="alertAlive"/>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">alert_ repetitive：</label>
+                <div class="formControls col-xs-6">
+                    <input type="number" class="input-text" value="1" placeholder="" id="alertRepetitive"/>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">alert_ repetitive_group：</label>
+                <div class="formControls col-xs-6">
+                    <input type="text" class="input-text" value="DIP_STREAMING_TEST" placeholder=""
+                           id="alertRepetitiveGroup"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_active_threshold：</label>
+
+                <input type="number" class="input-text" value="10" placeholder="" id="alertActiveThreshold"/>
+                <input type="checkbox" checked="checked" id="alertActive" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_accumulation_threshold ：</label>
+                <input type="number" class="input-text" value="30" placeholder="" id="alertAccumulationThreshold"/>
+                <input type="checkbox" checked="checked" id="alertAccumulation" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_receive_threshold ：</label>
+                <input type="number" step="0.1" name="alertReceiveThreshold" class="input-text" value="0.1"
+                       placeholder="" id="alertReceiveThreshold"/>
+                <input type="checkbox" checked="checked" id="alertReceive" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_scheduling_delay_threshold ：</label>
+
+                <input type="number" class="input-text" value="10" placeholder=""
+                       id="alertSchedulingDelayThreshold"/>
+                <input type="checkbox" checked="checked" id="alertSchedulingDelay" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_processing_threshold ：</label>
+
+                <input type="number" class="input-text" value="10" placeholder="" id="alertProcessingThreshold"/>
+                <input type="checkbox" checked="checked" id="alertProcessing" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-6 ">alert_active_processing_time_threshold ：</label>
+                <input type="number" class="input-text" value="5" placeholder=""
+                       id="alertActiveProcessingTimeThreshold"/>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-6 ">alert_active_processing_num_threshold ：</label>
+                <input type="number" class="input-text" value="5" placeholder=""
+                       id="alertActiveProcessingNumThreshold"/>
+                <input type="checkbox" checked="checked" id="alertActiveProcessing" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_inactive_receivers_threshold ：</label>
+
+                <input type="number" class="input-text" value="1" placeholder=""
+                       id="alertInactiveReceiversThreshold"/>
+                <input type="checkbox" checked="checked" id="alertInactiveReceivers" value="1"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5">alert_inactive_executors_threshold ：</label>
+
+                <input type="number" class="input-text" value="1" placeholder=""
+                       id="alertInactiveExecutorsThreshold"/>
+                <input type="checkbox" checked="checked" id="alertInactiveExecutors" value="1" name="alertProcessing"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-5 ">alert_error_threshold：</label>
+
+                <input type="number" class="input-text" value="30" placeholder="" id="alertErrorThreshold"/>
+                <input type="checkbox" checked="checked" id="alertError" value="1" name="alertError"/>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">alert_interval：</label>
+                <div class="formControls col-xs-6">
+                    <input type="number" class="input-text" value="3" placeholder="" id="alertInterva"/>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 ">alert_group：</label>
+                <div class="formControls col-xs-6 ">
+                    <input type="text" class="input-text" value="DIP_STREAMING" placeholder="" id="alertGroup"/>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <button id="postBtn" class="btn btn-primary radius" type="submit">提交</button>
+                <a onclick="closeLayer()">
+                    <button class="btn btn-default radius btn-style" type="button">返回列表</button>
+                </a>
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+
+<script type="text/javascript">
+
+
+    jQuery.validator.addMethod("isEndWithG", function (value, element) {
+        var patten = /(\d+)g$/;
+        return patten.test(value);
+    }, "请输入正确的格式，以g结尾");
+    jQuery.validator.addMethod("isFloat", function (value, element) {
+        var patten = /(\d+)\.(\d+)$/;
+    }, "请输入正确格式，例如1.0");
+
+
+    $('#addconfs').click(function () {
+        var child = "<input type=\"text\" class=\"input-text\" value=\"\" name=\"confs\"/>";
+        $('#confs').append(child);
+    });
+
+    function initialData() {
+        var thisURL = window.location.href;
+        var getval = thisURL.split('?')[1];
+        var appname = getval.split("=")[1];
+        $.ajax({
+            type: 'POST',
+            url: "/realtime/application/findbyname",
+            async: false,
+            data: {
+                'appname': appname
+            },
+            success: function (app) {
+                $('#id').html(app.id);
+                $('#appName').html(app.appName);
+                $('#imageName').html(app.imageName);
+                $('#imageTag').html(app.imageTag);
+                $('#driverCores').val(app.driverCores);
+                $('#driverMemory').val(app.driverMemory);
+                $('#executorNums').val(app.executorNums);
+                $('#executorCores').val(app.executorCores);
+                $('#executorMems').val(app.executorMems);
+
+                var confs = app.confs.split(',');
+                for (var i = 0; i < confs.length; i++) {
+                    var child = "<input type=\"text\" class=\"input-text\" value=\"" + confs[i] + "\" name=\"confs\"/>";
+                    $('#confs').append(child);
+                }
+
+                $('#files').val(app.files);
+                $('#queue').val(app.queue);
+                $('#className').val(app.className);
+                $('#jarName').val(app.jarName);
+                $('#department').val(app.department);
+
+                $('#collection').val(app.collection);
+                $('#alertAlive').val(app.alertAlive);
+                $('#alertRepetitive').val(app.alertRepetitive);
+                $('#alertRepetitiveGroup').val(app.alertRepetitiveGroup);
+
+                $('#alertActive').val(app.alertActive);
+                if (app.alertActive === 1) {
+                    $('#alertActive').attr('checked', true);
+                } else {
+                    $('#alertActive').attr('checked', false);
+                }
+                $('#alertActiveThreshold').val(app.alertActiveThreshold);
+
+                $('#alertAccumulation').val(app.alertAccumulation);
+                if (app.alertAccumulation === 1) {
+                    $('#alertAccumulation').attr('checked', true);
+                } else {
+                    $('#alertAccumulation').attr('checked', false);
+                }
+                $('#alertAccumulationThreshold').val(app.alertAccumulationThreshold);
+
+                $('#alertReceive').val(app.alertReceive);
+                if (app.alertReceive === 1) {
+                    $('#alertReceive').attr('checked', true);
+                } else {
+                    $('#alertReceive').attr('checked', false);
+                }
+                $('#alertReceiveThreshold').val(app.alertReceiveThreshold);
+
+                $('#alertSchedulingDelay').val(app.alertSchedulingDelay);
+                if (app.alertSchedulingDelay === 1) {
+                    $('#alertSchedulingDelay').attr('checked', true);
+                } else {
+                    $('#alertSchedulingDelay').attr('checked', false);
+                }
+                $('#alertSchedulingDelayThreshold').val(app.alertSchedulingDelayThreshold);
+
+                $('#alertProcessing').val(app.alertProcessing);
+                if (app.alertProcessing === 1) {
+                    $('#alertProcessing').attr('checked', true);
+                } else {
+                    $('#alertProcessing').attr('checked', false);
+                }
+                $('#alertProcessingThreshold').val(app.alertProcessingThreshold);
+
+                $('#alertActiveProcessing').val(app.alertActiveProcessing);
+                if (app.alertActiveProcessing === 1) {
+                    $('#alertActiveProcessing').attr('checked', true);
+                } else {
+                    $('#alertActiveProcessing').attr('checked', false);
+                }
+                $('#alertActiveProcessingTimeThreshold').val(app.alertActiveProcessingTimeThreshold);
+                $('#alertActiveProcessingNumThreshold').val(app.alertActiveProcessingNumThreshold);
+
+                $('#alertInactiveReceivers').val(app.alertInactiveReceivers);
+                if (app.alertInactiveReceivers === 1) {
+                    $('#alertInactiveReceivers').attr('checked', true);
+                } else {
+                    $('#alertInactiveReceivers').attr('checked', false);
+                }
+                $('#alertInactiveReceiversThreshold').val(app.alertInactiveReceiversThreshold);
+
+                $('#alertInactiveExecutors').val(app.alertInactiveExecutors);
+                if (app.alertInactiveExecutors === 1) {
+                    $('#alertInactiveExecutors').attr('checked', true);
+                } else {
+                    $('#alertInactiveExecutors').attr('checked', false);
+                }
+                $('#alertInactiveExecutorsThreshold').val(app.alertInactiveExecutorsThreshold);
+
+
+                $('#alertError').val(app.alertError);
+                if (app.alertError === 1) {
+                    $('#alertError').attr('checked', true);
+                } else {
+                    $('#alertError').attr('checked', false);
+                }
+                $('#alertErrorThreshold').val(app.alertErrorThreshold);
+
+                $('#alertGroup').val(app.alertGroup);
+                $('#alertInterva').val(app.alertInterval);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+
+    }
+
+    /*表单验证*/
+    $().ready(function () {
+        initialData();
+        $(':checkbox').change(function () {
+            if ($(this).is(':checked')) {
+                $(this).val('1');
+            } else {
+                $(this).val(0);
+            }
+        });
+
+        $('#showmore').hide();
+        $('#moreinfo').click(function () {
+            $('#showmore').toggle();
+        });
+
+        $("#form-app-add").validate({
+            onsubmit: function (element) {
+                $(element).valid();
+            },// 开启提交时验证
+            onfocusout: function (element) {
+                $(element).valid();
+            },// 开启失去焦点时验证
+
+            /*去除左侧空格*/
+            onkeyup: function (element, event) {
+                var value = this.elementValue(element).replace(/^\s+/g, "");
+                $(element).val(value);
+            },
+
+            rules: {
+                driverMemory: {
+                    isEndWithG: true,
+                    required: true
+                },
+                executorMems: {
+                    isEndWithG: true,
+                    required: true
+                },
+                alertReceiveThreshold: {
+                    isFloat: true,
+                    required: true
+                },
+                driverCores: {required: true},
+                executorNums: {required: true},
+                executorCores: {required: true},
+                queue: {required: true},
+                className: {required: true},
+                jarName: {required: true},
+                department: {required: true}
+            },
+            messages: {
+                driverMemory: {
+                    isEndWithG: "请输入正确格式，例2g",
+                    required: "不能为空"
+                },
+                executorMems: {
+                    isEndWithG: "请输入正确格式，例2g",
+                    required: "不能为空"
+                },
+                alertReceiveThreshold: {
+                    isFloat: "请输入正确格式，例1.0",
+                    required: "不能为空"
+                },
+                driverCores: {required: "不能为空"},
+                executorNums: {required: "不能为空"},
+                executorCores: {required: "不能为空"},
+                queue: {required: "不能为空"},
+                className: {required: "不能为空"},
+                jarName: {required: "不能为空"},
+                department: {required: "不能为空"}
+            },
+            submitHandler: function (form) { //通过之后回调
+                var streaming = {};
+                streaming.appName = $('#appName').val();
+                streaming.imageName = $('#imageName').val();
+                streaming.imageTag = $('#imageTag').val();
+                streaming.driverCores = $('#driverCores').val();
+                streaming.driverMemory = $('#driverMemory').val();
+                streaming.executorNums = $('#executorNums').val();
+                streaming.executorCores = $('#executorCores').val();
+                streaming.executorMems = $('#executorMems').val();
+                var confs = "";
+                var childrens = $('#confs').children();
+                for (var i = 0; i < childrens.length; i++) {
+                    if (childrens.eq(i).val() !== "") {
+                        confs += childrens.eq(i).val();
+                    }
+                    if (i < childrens.length - 1) {
+                        confs += ",";
+                    }
+                }
+                streaming.confs = confs;
+                streaming.files = $('#files').val();
+                streaming.queue = $('#queue').val();
+                streaming.className = $('#className').val();
+                streaming.jarName = $('#jarName').val();
+                streaming.department = $('#department').val();
+
+                streaming.collection = $('#collection').val();
+                streaming.alertAlive = $('#alertAlive').val();
+                streaming.alertRepetitive = $('#alertRepetitive').val();
+                streaming.alertRepetitiveGroup = $('#alertRepetitiveGroup').val();
+                streaming.alertActive = $('#alertActive').val();
+                streaming.alertActiveThreshold = $('#alertActiveThreshold').val();
+                streaming.alertAccumulation = $('#alertAccumulation').val();
+                streaming.alertAccumulationThreshold = $('#alertAccumulationThreshold').val();
+                streaming.alertReceive = $('#alertReceive').val();
+                streaming.alertReceiveThreshold = $('#alertReceiveThreshold').val();
+                streaming.alertSchedulingDelay = $('#alertSchedulingDelay').val();
+                streaming.alertSchedulingDelayThreshold = $('#alertSchedulingDelayThreshold').val();
+                streaming.alertProcessing = $('#alertProcessing').val();
+                streaming.alertProcessingThreshold = $('#alertProcessingThreshold').val();
+                streaming.alertActiveProcessing = $('#alertActiveProcessing').val();
+                streaming.alertActiveProcessingTimeThreshold = $('#alertActiveProcessingTimeThreshold').val();
+                streaming.alertActiveProcessingNumThreshold = $('#alertActiveProcessingNumThreshold').val();
+                streaming.alertInactiveReceivers = $('#alertInactiveReceivers').val();
+                streaming.alertInactiveReceiversThreshold = $('#alertInactiveReceiversThreshold').val();
+                streaming.alertInactiveExecutors = $('#alertInactiveExecutors').val();
+                streaming.alertInactiveExecutorsThreshold = $('#alertInactiveExecutorsThreshold').val();
+                streaming.alertError = $('#alertError').val();
+                streaming.alertErrorThreshold = $('#alertErrorThreshold').val();
+                streaming.alertGroup = $('#alertGroup').val();
+                streaming.alertInterval = $('#alertInterva').val();
+
+                /*验证通过提交表单*/
+                $.ajax({
+                    type: 'POST',
+                    url: "/realtime/application/update",
+                    contentType: 'application/json',
+                    data: JSON.stringify(streaming),
+                    async: false,
+                    success: function () {
+                        var index = parent.layer.getFrameIndex(window.name);//获取当前弹出层的层级
+                        /*刷新list*/
+                        var bStopIndex = 0;
+                        var topWindow = $(window.parent.document);
+                        var iframe_box = topWindow.find("#iframe_box");
+                        iframe_box.find(".show_iframe").hide().eq(bStopIndex).show().find("iframe").attr("src", "/realtime/application/application-list.html");
+                        parent.layer.close(index);//关闭弹出层
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+                    }
+                });
+            },
+            invalidHandler: function (form, validator) {
+                return false;
+            }
+        });
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

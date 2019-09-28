@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:motan="http://api.weibo.com/schema/motan"
+       xmlns:trigger="http://api.weibo.com/schema/trigger"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://api.weibo.com/schema/motan http://api.weibo.com/schema/motan.xsd 
+           http://api.weibo.com/schema/trigger http://api.weibo.com/schema/trigger.xsd">
+    <!-- config.api.weibo.com 10.229.88.91 -->
+    <motan:registry id="vintage_test" name="vintage_test" regProtocol="trigger_vintage"
+                    address="config.api.weibo.com" port="80" excise="dynamic" registrySessionTimeout="10000"/>
+
+    <trigger:tmc id="triggerMc_status" registry="vintage_test" group="status-core"
+                 consumerGroupId="test1#ephemeral" consumerId="ctest5" socketTimeOut="1000"
+                 maxSize="100" type="status">
+    </trigger:tmc>
+
+    <trigger:tmc id="triggerMc_add" registry="vintage_test" group="video-core"
+                 consumerGroupId="test1#ephemeral" consumerId="dip-test" socketTimeOut="1000"
+                 maxSize="100" type="">
+    </trigger:tmc>
+
+    <!-- <trigger:tmc id="producer" registry="vintage_test" group="InternalTest-status" socketTimeOut="50000" maxSize="50" />
+     -->
+</beans>

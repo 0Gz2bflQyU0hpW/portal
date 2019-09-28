@@ -1,0 +1,22 @@
+{
+  "kafkaCluster":[
+    {
+      "clusterName":"k1001",
+      "zookeeperAddress":"10.13.80.21:2181,10.13.80.22:2181,10.13.80.23:2181/kafka/k1001",
+      "threadNumber":12,
+      "jmxPort":"7999"
+    },
+    {
+      "clusterName":"aliyun-dip",
+      "zookeeperAddress":"10.85.126.107:2181,10.85.126.108:2181,10.85.126.109:2181,10.85.126.110:2181,10.85.126.111:2181/kafka/dip",
+      "threadNumber":4,
+      "jmxPort":"7999"
+    },
+    {
+      "clusterName":"aliyun-k1",
+      "zookeeperAddress":"first.zookeeper.aliyun.dip.weibo.com:2181,second.zookeeper.aliyun.dip.weibo.com:2181,third.zookeeper.aliyun.dip.weibo.com:2181/kafka/k1",
+      "threadNumber":4,
+      "jmxPort":"7999"
+    }
+  ]
+}

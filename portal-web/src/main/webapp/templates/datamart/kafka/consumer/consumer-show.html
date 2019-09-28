@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+<script type="text/javascript" src="http://libs.useso.com/js/respond.js/1.4.2/respond.min.js"></script>
+<script type="text/javascript" src="http://cdn.bootcss.com/css3pie/2.0beta1/PIE_IE678.js"></script>
+<![endif]-->
+<link type="text/css" rel="stylesheet" href="/static/h-ui/css/H-ui.css"/>
+<link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css" />
+<link type="text/css" rel="stylesheet" href="font/font-awesome.min.css"/>
+<!--[if IE 7]>
+<link href="http://www.bootcss.com/p/font-awesome/assets/css/font-awesome-ie7.min.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<title>consumer详情</title>
+</head>
+<body>
+<div class="pd-20">
+    <table class="table">
+        <tbody>
+        <tr>
+            <th class="text-r" width="170">id：</th>
+            <td id="id"></td>
+        </tr>
+        <tr>
+            <th class="text-r">topic名称：</th>
+            <td id="topic_name"></td>
+        </tr>
+        <tr>
+            <th class="text-r">消费者组：</th>
+            <td id="consumer_group"></td>
+        </tr>
+        <tr>
+            <th class="text-r">产品线：</th>
+            <td id="consumer_product"></td>
+        </tr>
+        <tr>
+            <th class="text-r">联系人：</th>
+            <td id="contact_person"></td>
+        </tr>
+        <tr>
+            <th class="text-r">创建时间：</th>
+            <td id="create_time"></td>
+        </tr>
+        <tr>
+            <th class="text-r">最近一次更新时间：</th>
+            <td id="update_time"></td>
+        </tr>
+        <tr>
+            <th class="text-r">备注：</th>
+            <td id="comment"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script>
+
+
+<script>
+    $(document).ready(function(){
+        /*获取id*/
+        var thisURL = window.location.href;
+        var  getval = thisURL.split('?')[1];
+        var id = getval.split("=")[1];
+
+        /*获取某id的consumer信息*/
+        $.ajax({
+            type: 'POST',
+            url: "/datamart/kafka/consumer/show",
+            data: {
+                'id': id
+            },
+            success: function (data) {
+
+                var createTime = new Date();
+                createTime.setTime(data.kafkaConsumer.createTime);
+                var updateTime = new Date();
+                updateTime.setTime(data.kafkaConsumer.updateTime);
+                $("#id").html(data.kafkaConsumer.id);
+                $("#topic_name").html(data.kafkaConsumer.topicName);
+                $("#consumer_group").html(data.kafkaConsumer.consumerGroup);
+                $("#consumer_product").html(data.kafkaConsumer.consumerProduct);
+                $("#contact_person").html(data.kafkaConsumer.contactPerson);
+                $("#create_time").html(createTime.format('yyyy-MM-dd hh:mm:ss'));
+                $("#update_time").html(updateTime.format('yyyy-MM-dd hh:mm:ss'));
+                $("#comment").html(data.kafkaConsumer.comment);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

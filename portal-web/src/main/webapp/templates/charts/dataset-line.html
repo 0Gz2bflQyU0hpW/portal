@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/lib/html5shiv.js"></script>
+<script type="text/javascript" src="/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/js/loading/load.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>折线图</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 统计管理 <span class="c-gray en">&gt;</span> 折线图 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="text-c">
+        <!--<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>-->
+        选择日期范围：
+        <input id="start" placeholder="请输入日期" class="laydate-icon" onClick="laydate({elem:'#start',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        -
+        <input id="end" placeholder="请输入日期" class="laydate-icon" onClick="laydate({elem:'#end',istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"/>
+        <input type="text" name="" id="word" placeholder=" 数据集名称" style="width:250px" class="input-text"/>
+        <button name="" id="search-dataset" class="btn btn-success" type="submit" onclick="search_dataset()"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </div>
+    <div id="container" style="min-width:700px;height:400px"></div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script src="/js/echarts.min.js"></script>
+<script type="text/javascript" src="/js/laydate.js"></script>
+<script src="/js/loading/load-min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    function search_dataset(){
+        //loading图标
+        $.mask_element('#container');
+
+        var startDate = $("#start").val();
+        var endDate = $("#end").val();
+        var word = $("#word").val();
+
+        /*如果结束日期不填，默认到当前日期*/
+        if(endDate == "") {
+            endDate = new Date();
+
+            endDate = endDate.format('yyyy-MM-dd hh:mm:ss');
+        }
+        /*如果起始日期不填，默认搜索七天内的*/
+        if(startDate == "") {
+            //将endDate转换为时间戳
+            startDate = Date.parse(new Date(endDate));
+            //得到七天前的时间戳
+            startDate = startDate - 1000*60*60*24*7;
+            /*将时间戳按照格式转换*/
+            var time = new Date();
+            time.setTime(startDate);
+            startDate = time.format('yyyy-MM-dd hh:mm:ss');
+        }
+
+        if(startDate >= endDate) {
+            alert("请输入正确的日期区间！");
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: "/datamart/hdfs/getLine",
+            data: {
+                'startDate' : startDate,
+                'endDate' : endDate,
+                'word': word
+            },
+            success: function (data) {
+                drawChart(data, startDate, endDate, word);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                turnToErrorPage(XMLHttpRequest.readyState, XMLHttpRequest.status, errorThrown);
+            }
+        });
+    }
+    
+    function drawChart(data, startDate, endDate, word) {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('container'));
+
+        var series = [];
+        var seriesData = [];
+        if(word != "" && data.nameList.length == 0) {
+            alert("数据集" + word + "不存在或在请求的时间区间内没有数据");
+        } else if(data.nameList.length == 0) {
+            alert("请求的时间区间内没有数据");
+        }
+
+        /*对title的赋值*/
+        if(word == "") {
+            var titleText = startDate + "至" + endDate + " 各数据集每小时数据量大小";
+        } else {
+            var titleText = startDate + "至" + endDate + " 数据集" + word + "每小时数据量大小";
+        }
+
+        for(var j=0; j<data.nameList.length; j++) {
+            var temData = [];
+            for (var i=0; i<data.size[j].length; i++) {
+                var time = new Date();
+                time.setTime(data.time[j][i]);
+                temData.push({
+                    name: time.toString(),
+                    value: [
+                        time,
+                        data.size[j][i]
+                    ]
+                });
+            }
+            seriesData.push(temData);
+        }
+
+        for(var i=0;i<3;i++) {
+            series.push({
+                name: data.nameList[i],
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: seriesData[i],
+            });
+        }
+
+        option = {
+            grid:{
+                x:90,
+                y:70,
+                x2:170,
+                y2:20
+            },
+            title: {
+                left: 'center',
+                text: titleText,
+                top: 20
+            },
+            tooltip: {
+                trigger: 'axis',
+
+                axisPointer: {
+                    animation: false
+                },
+                formatter: function (params) {
+                    var str = '';
+                    for(var i=0; i<params.length; i++) {
+                        var date = params[i].value[0];
+                        if(i == 0) {
+                            str += date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+                                + '</br>' + '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[i].color + '"></span>'
+                                + params[i].seriesName + ' : ' + params[i].value[1] + 'M';
+                        } else {
+                            str += '</br>' + '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:' + params[i].color + '"></span>'
+                                + params[i].seriesName + ' : ' + params[i].value[1] + 'M';
+                        }
+                    }
+                    return str;
+                }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    dataView: {readOnly: false},
+                    restore: {},
+                    saveAsImage: {}
+                },
+                right: 30,
+                top:20
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: 10,
+                top: 80,
+                bottom: 20,
+                data: data.nameList
+            },
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: false
+                },
+                boundaryGap: false,
+                splitNumber:12,
+                //max:new Date(2017, 8, 1)
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '20%']
+            },
+            series: series
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        //自适应大小
+        window.onresize = myChart.resize;
+
+        //关闭loading图标
+        $.mask_close('#container');
+    }
+
+    /*当页面加载时执行一次*/
+    $(document).ready(function(){
+        search_dataset();
+    });
+
+</script>
+</body>
+</html>

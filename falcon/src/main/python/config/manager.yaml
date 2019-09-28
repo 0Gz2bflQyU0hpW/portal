@@ -1,0 +1,46 @@
+elasticsearch:
+  manager:
+    user: admin
+    password: esadmin
+    number_of_nodes: 23
+    number_of_data_nodes: 19
+    unassigned_shards: 50
+
+manager:
+  tasks:
+    - task:
+        name: cluster health
+        debug: true
+        host: es.intra.dip.weibo.com
+        port: 9200
+        code: mng = Manager(task); mng.get_cluster_health()
+        interval:
+          #possible values: seconds minutes hours
+          units: minutes
+          value: 3
+    - task:
+        name: node health
+        debug: true
+        host: 10.13.56.28
+        port: 9200
+        code: mng = Manager(task); mng.get_node_health()
+        interval:
+          #possible values: seconds minutes hours
+          units: minutes
+          value: 5
+    - task:
+        name: node health
+        debug: true
+        host: 10.13.56.35
+        port: 9200
+        code: mng = Manager(task); mng.get_node_health()
+        interval:
+          #possible values: seconds minutes hours
+          units: minutes
+          value: 5
+
+
+logging:
+  name: manager
+     #possible values DEBUG INFO WARN ERROR FATAL
+  level: DEBUG

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>/data1/hdfs/name</value>
+</property>
+<property>
+  <name>dfs.blocksize</name>
+  <value>268435456</value>
+</property>
+<property>
+  <name>topology.script.file.name</name>
+  <value>/usr/local/hadoop-2.8.2/etc/hadoop/rack.py</value>
+</property>
+<property>
+  <name>dfs.datanode.data.dir</name>
+  <value>/data3/hdfs/data,/data4/hdfs/data,/data5/hdfs/data,/data6/hdfs/data,/data7/hdfs/data,/data8/hdfs/data,/data9/hdfs/data,/data10/hdfs/data,/data11/hdfs/data</value>
+</property>
+<property>
+  <name>dfs.nameservices</name>
+  <value>nyx</value>
+</property>
+<property>
+  <name>dfs.ha.namenodes.nyx</name>
+  <value>nn1,nn2</value>
+</property>
+<property>
+  <name>dfs.namenode.rpc-address.nyx.nn1</name>
+  <value>nn1.nyx.dip.weibo.com:8020</value>
+</property>
+<property>
+  <name>dfs.namenode.rpc-address.nyx.nn2</name>
+  <value>nn2.nyx.dip.weibo.com:8020</value>
+</property>
+<property>
+  <name>dfs.namenode.http-address.nyx.nn1</name>
+  <value>nn1.nyx.dip.weibo.com:50070</value>
+</property>
+<property>
+  <name>dfs.namenode.http-address.nyx.nn2</name>
+  <value>nn2.nyx.dip.weibo.com:50070</value>
+</property>
+<property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://first.jn.nyx.dip.weibo.com:8485;second.jn.nyx.dip.weibo.com:8485;third.jn.nyx.dip.weibo.com:8485;fourth.jn.nyx.dip.weibo.com:8485;fifth.jn.nyx.dip.weibo.com:8485;sixth.jn.nyx.dip.weibo.com:8485;seventh.jn.nyx.dip.weibo.com:8485/nyx</value>
+</property>
+<property>
+  <name>dfs.client.failover.proxy.provider.nyx</name>
+  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+<property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>sshfence(hdfs:9888)</value>
+</property>
+<property>
+  <name>dfs.datanode.du.reserved</name>
+  <value>53687091200</value>
+</property>
+<property>
+  <name>dfs.datanode.balance.bandwidthPerSec</name>
+  <value>10m</value>
+</property>
+<property>
+  <name>dfs.ha.fencing.ssh.private-key-files</name>
+  <value>/usr/home/hdfs/.ssh/id_rsa</value>
+</property>
+<property>
+  <name>dfs.ha.fencing.ssh.connect-timeout</name>
+  <value>30000</value>
+</property>
+<property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>/data2/hdfs/journal</value>
+</property>
+<property>
+  <name>dfs.ha.automatic-failover.enabled</name>
+  <value>true</value>
+</property>
+<property>
+  <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+  <value>false</value>
+</property>
+<property>
+  <name>dfs.permissions.superusergroup</name>
+  <value>hadoop</value>
+</property>
+<property>
+   <name>dfs.hosts.exclude</name>
+   <value>/usr/local/hadoop-2.8.2/etc/hadoop/excludes</value>
+</property>
+</configuration>

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/dip_data_analyze?characterEncoding=UTF-8
+    username: root
+    password: root
+
+# HdfsFile
+#fs.default.name: hdfs://testhadoop
+#dfs.nameservices: testhadoop
+#dfs.namenode.rpc-address.nn1: d136061.innet.dip.sina.com.cn:8020
+#dfs.namenode.rpc-address.nn2: d136064.innet.dip.sina.com.cn:8020

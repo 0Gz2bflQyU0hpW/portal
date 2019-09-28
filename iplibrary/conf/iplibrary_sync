@@ -1,0 +1,1 @@
+00 11 * * * root sh /data0/dipplat/software/script/iplibrary_sync.sh >> /var/log/iplibrary.log 2>&1
